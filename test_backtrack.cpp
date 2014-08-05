@@ -18,15 +18,34 @@ bool is_a_solution(int a[], int k, int n)
 //아래 code는 부분집합을 구하는 경우라 후보군의 갯수가 있고(true), 없고(false) 두가지 뿐임
 void construct_candidates(int a[], int k, int n, int c[], int* ncandidates)
 {
+	#if 0			//모든 부분 집합을 구하기위한 construct_candidates
 	c[0]=true;
 	c[1]=false;
 	*ncandidates=2;
+	#else			//모든 순열을 구하기위한 construct_candidates
+	int i;
+	bool in_perm[NMAX] = {false,};
+	
+	for(i=0; i<k; ++i)
+		in_perm[a[i]]=true;
+	
+	*ncandidates =0;
+	for(i=1; i<=n; ++i)
+	{
+		if(in_perm[i] == false)
+		{
+			c[*ncandidates] = i;
+			(*ncandidates)++;
+		}
+	}
+	#endif
 }
 
 //마지막 노드까지 와서 출력하는 부분.(출력 이외의 output이 필요하면 이부분을 수정)
 //is_a_solution에서 k(현재 재귀호출된 count)와 입력한 n 값을 비교한 후 끝까지 오면 호출 됨
 void process_solution(int a[], int k)
 {
+	#if 0			//부분집합
 	int i;
 	printf("{");
 	for(i=1; i<=k; ++i)
@@ -35,6 +54,12 @@ void process_solution(int a[], int k)
 			printf(" %d",i);
 	}
 	printf(" }\n");
+	#else			//순열
+	int i;
+	for(i=1; i<=k; ++i)
+		printf(" %d", a[i]);
+	printf("\n");
+	#endif
 }
 
 void backtrack(int a[], int k, int input)
@@ -62,7 +87,7 @@ void backtrack(int a[], int k, int input)
 
 void generate_subsets(int n)
 {
-	int a[NMAX];
+	int a[NMAX] = {false,};
 	backtrack(a,0,n);
 }
 
