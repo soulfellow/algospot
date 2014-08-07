@@ -15,7 +15,7 @@ bool is_a_solution(int a[], int k, int n,int b_cnt)
 
 void construct_candidates(int a[], int k, int n, int b_cnt, int c[], int* ncandidates)
 {
-	int i, j, l;            // 카운터 //
+	int i, j, l, m;            // 카운터 //
 	bool legal_move;   // 이동 가능 여부 //
 
 	*ncandidates = 0;
@@ -26,17 +26,57 @@ void construct_candidates(int a[], int k, int n, int b_cnt, int c[], int* ncandi
 		{
 			legal_move = true;
 			int temp = n*(i-1)+j;	//현재 B를 넣으려는 index
-			cout << "B index : " << temp << "   ";
+			cout << "k : " << k << " B index : " << temp << "   ";
 			for(l=1; l<k; ++l)
 			{
-				//a[l]은 이전에 B를 넣었던 index
-				if(temp-((n+1)*l) == a[l]		//왼쪽 위 대각선
-				|| temp-((n-1)*l) == a[l]		//오른쪽 위 대각선
-				|| temp == a[l])				//같은 위치
+				int temp_i = ((a[l]-1)/n)+1;	//이전 후보 B의 행
+				int temp_j = a[l]%n;			//이전 후보 B의 열
+				if(temp_j == 0)				//나머지가 0이면 마지막 열
+					temp_j = n;
+				
+				if(abs(i-temp_i) == abs(j-temp_j) || temp == a[l])	//대각선 check, 같은위치
 				{
 					legal_move = false;
 					break;
 				}				
+				
+				#if 0
+				//a[l]은 이전에 B를 넣었던 index
+				if(temp %n == 1)	//첫 열은 왼쪽 위 대각선 check하면 안됨
+				{
+					for(m=1; m<=k;++m){
+						if(temp-((n-1)*m) == a[l])		//오른쪽 위 대각선						
+						{
+							legal_move = false;
+							break;
+						}
+					}
+					if(!legal_move)	break;
+				}
+				else if(temp%n == 0)	//마지막 열은 오른쪽 위 대각선 check하면 안됨
+				{
+					for(m=1; m<=k;++m){
+						if(temp-((n+1)*m) == a[l])		//왼쪽 위 대각선
+						{
+							legal_move = false;
+							break;
+						}
+					}
+					if(!legal_move)	break;
+				}
+				else
+				{
+					for(m=1; m<=k;++m){
+						if(temp-((n+1)*m) == a[l]		//왼쪽 위 대각선
+						|| temp-((n-1)*m) == a[l])		//오른쪽 위 대각선
+						{
+							legal_move = false;
+							break;
+						}
+					}
+					if(!legal_move)	break;
+				}
+				#endif				
 			}
 			
 			if(legal_move == true)
